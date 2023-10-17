@@ -5,13 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maps</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 
@@ -22,26 +18,64 @@
     </div>
     <div id="map"></div>
     <div id="card" style="display: none;">
-        <img src="../mapa/img/museu.jpg" alt="" id="card-image">
+        <img src="./img/museu.jpg" alt="" id="card-image">
     </div>
 
-    <img src="../mapa/img/giulia.png" alt="" id="character">
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <img src="./img/giulia.png" alt="" id="character">
+
     <script>
 
+        
+     
+
+
+
+
+        // --------------------------------------------------------------------------
+
+
+
+        const map = L.map('map', { maxZoom: 19 }).setView([-22.120530755875148, -51.40559483356016], 16);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Coordenadas das atrações
+        const points = {
+            "SENAI": [-22.120530755875148, -51.40559483356016],
+            "Cidade da Criança": [-22.183350843361765, -51.38548184752809],
+            "Parque do Povo": [-22.12355275180193, -51.40244938985967],
+            "Museu Histórico": [-22.116477209903824, -51.411605061024744]
+            // Adicione outras coordenadas aqui...
+        };
+
+        // Adicionar marcadores (pinos) para as capitais
+        // const markers = [];
+        // for (const point in points) {
+        //     const marker = L.marker(points[point]);
+        //     markers.push({ marker, collisionAlertShown: false }); // Adicione um objeto para rastrear o estado do alerta
+        // }
+
+         // Adicionar marcadores (pinos) para as atrações
+         const markers = [];
+        for (const point in points) {
+            markers[point] = L.marker(points[point]);
+        }
+
+     
         const character = document.getElementById('character');
         const alerta = document.getElementById('alerta');
 
-        let xPosition = window.innerWidth / 1.2;
-        let yPosition = window.innerHeight / 1.2;
+        let xPosition = window.innerWidth / 2;
+        let yPosition = window.innerHeight / 2;
         let imgfixa = '';
         let imgindex = 0;
         let bgPositionX = 0;
         let step = 10
 
-        character.style.left = window.innerWidth / 1.2 + 'px';
-        character.style.top = window.innerHeight / 1.2 + 'px';
+        character.style.left = window.innerWidth / 2 + 'px';
+        character.style.top = window.innerHeight / 2 + 'px';
 
         alerta.style.left = window.innerWidth / 4 + 'px';
         alerta.style.top = window.innerHeight / 4 + 'px';
@@ -55,23 +89,27 @@
                 yPosition -= 10;
                 imgindex = (imgindex + 1) % 5;
                 //character  'scaleX(-1)';
-                imgfixa = '../mapa/img/tras/tras'
+                imgfixa = './img/tras/tras'
+                checkCollisions()
             } else if (key === 'ArrowDown') {
                 yPosition += 10;
                 imgindex = (imgindex + 1) % 8;
                 //character  'scaleX(-1)';
-                imgfixa = '../mapa/img/right/giulia'
+                imgfixa = './img/right/giulia'
+                checkCollisions()
             } else if (key === 'ArrowLeft') {
                 xPosition -= 10;
                 imgindex = (imgindex + 1) % 8;
                 //character  'scaleX(1)';
-                imgfixa = '../mapa/img/left/esquerda'
+                imgfixa = './img/left/esquerda'
+                checkCollisions()
 
             } else if (key === 'ArrowRight') {
                 xPosition += 10;
                 imgindex = (imgindex + 1) % 8;
                 //character  'scaleX(1)';
-                imgfixa = '../mapa/img/right/giulia'
+                imgfixa = './img/right/giulia'
+                checkCollisions()
             }
 
 
@@ -84,56 +122,57 @@
 
 
         });
+        // Função para verificar colisões com os marcadores
+        function checkCollisions() {
+            const characterRect = character.getBoundingClientRect();
+            for (const point in points) {
+                const marker = markers[point];
+                const markerLatLng = marker.getLatLng();
+               // console.log(marker)
+                const markerPos = map.latLngToContainerPoint(markerLatLng);
+
+                if (
+                    xPosition + characterRect.width > markerPos.x &&
+                    xPosition < markerPos.x + 0.1 && // Tamanho aproximado do ícone do marcador
+                    yPosition + characterRect.height > markerPos.y &&
+                    yPosition < markerPos.y + 0.1 // Tamanho aproximado do ícone do marcador
+                ) {
+                    alert(`Você encontrou ${point}!`);
+                    xPosition = markerPos.x + 50
+                    
+                    
+                }
+            }
+        }
+
+
+       // setInterval(checkCollisions, 500); // Verificar colisões a cada 100ms
+
+      
         setTimeout(() => {
             document.getElementById("alerta").style.display = "none";
         }, 5000);
 
-        const map = L.map('map').setView([-22.120530755875148, -51.40559483356016], 25);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        L.marker([-22.120530755875148, -51.40559483356016]).addTo(map)
-            .bindPopup('Senai')
-            .openPopup();
-        L.marker([-22.183350843361765, -51.38548184752809]).addTo(map)
-            .bindPopup('Cidade da Criança')
-            .openPopup();
-        L.marker([-22.12355275180193, -51.40244938985967]).addTo(map)
-            .bindPopup('Parque do Povo')
-            .openPopup();
-        L.marker([-22.120610067259015, -51.37947325079412]).addTo(map)
-            .bindPopup('Matarazzo')
-            .openPopup();
-        L.marker([-22.12022849431053, -51.4139252032715]).addTo(map)
-            .bindPopup('Sesc')
-            .openPopup();
-        L.marker([-22.116477209903824, -51.411605061024744]).addTo(map)
-            .bindPopup('Museu Histórico')
-            .openPopup();
-
-        var circle = L.circle([-22.116477209903824, -51.411605061024744], {
-            radius: 40
+        //Icon point
+        var LeafIcon = L.Icon.extend({
+            options: {
+                iconSize: [50, 50],
+                iconAnchor: [22, 94],
+                popupAnchor: [-3, -76]
+            }
         });
 
-        function point() {
+        var Museu = new LeafIcon({ iconUrl: './img/museu.jpg' }),
+            PqPovo = new LeafIcon({ iconUrl: './img/parquedopovo.jpg' }),
+            SENAI = new LeafIcon({ iconUrl: './img/senai.jpg' });
 
-
-            if (character == circle) {
-                document.getElementById("card").style.display = "flex";
-                document.getElementById("card-image").src = "../mapa/img/museu.jpg";
-            } else {
-                document.getElementById("card").style.display = "none";
-            }
-        }
-
-        point();
-
-
+        L.marker([-22.116477209903824, -51.411605061024744], { icon: Museu }).addTo(map).bindPopup("Museu Histórico");
+        L.marker([-22.120530755875148, -51.40559483356016], { icon: SENAI }).addTo(map).bindPopup("SENAI");
+        L.marker([-22.12355275180193, -51.40244938985967], { icon: PqPovo }).addTo(map).bindPopup("Parque do Povo");
 
     </script>
-    <script src="script.js"></script>
 </body>
 
 </html>
+
+

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<style>
+  #character {
+    position: absolute;
+    width: 50px;
+    height: 88px;
+    transition: 0.1s;
+    z-index: 1000;
+  }
+  #map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+  }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body>
+
+<img id="character" src="src/character4/left0.png">
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+const character = document.getElementById('character');
+const map = L.map('map', { maxZoom: 19 }).setView([-23.5505, -46.6333], 5);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+}).addTo(map);
+
+let xPosition = window.innerWidth / 2 - 25;
+let yPosition = window.innerHeight / 2 - 25;
+let imagePrefix = '';
+let currentImageIndex = 0;
+
+character.style.left = xPosition + 'px';
+character.style.top = yPosition + 'px';
+
+// Coordenadas das capitais do Brasil
+const capitals = {
+    "Rio Branco": [-9.975377, -67.824897],
+    "Maceió": [-9.66599, -35.735003],
+    "Perdeu playboy": [-23.5505, -46.6333],
+    "Quente pra kct": [-15.595547452168514, -56.0928096796351]
+  // Adicione outras coordenadas aqui...
+};
+
+// Adicionar marcadores (pinos) para as capitais
+const markers = [];
+for (const capital in capitals) {
+  const marker = L.marker(capitals[capital]);
+  marker.bindPopup(capital);
+  marker.addTo(map);
+  markers.push({ marker, collisionAlertShown: false }); // Adicione um objeto para rastrear o estado do alerta
+}
+
+//tratar as teclas
+document.addEventListener('keydown', (event) => {
+
+  const key = event.key;
+
+  if (key === 'ArrowUp') {
+    yPosition -= 3;
+    currentImageIndex = (currentImageIndex + 1) % 4;
+    character.style.transition = 'transform 1s ';
+    imagePrefix = 'src/character4/costas';
+  } else if (key === 'ArrowDown') {
+    yPosition += 3;
+    currentImageIndex = (currentImageIndex + 1) % 4;
+    character.style.transform = 'scaleY(1)';
+    imagePrefix = 'src/character4/frente';
+  } else if (key === 'ArrowLeft') {
+    xPosition -= 3;
+    currentImageIndex = (currentImageIndex + 1) % 8;
+     character.style.transform = 'scaleX(1)';
+     imagePrefix = 'src/character4/left';
+  } else if (key === 'ArrowRight') {
+    xPosition += 3;
+    currentImageIndex = (currentImageIndex + 1) % 8;
+     character.style.transform = 'scaleX(1)';
+     imagePrefix = 'src/character4/right';
+  }else{
+    // alert('botão errado oreia')
+    // imagePrefix = 'src/character4/frente';
+  }
+  const imageSrc = `${imagePrefix}${currentImageIndex}.png`;
+  character.src = imageSrc;
+  character.style.left = xPosition + 'px';
+  character.style.top = yPosition + 'px';
+
+  // Verificar colisão com os marcadores
+  const characterRect = character.getBoundingClientRect();
+  markers.forEach(item => {
+    const { marker, collisionAlertShown } = item;
+    if (!collisionAlertShown) {
+      const markerLatLng = marker.getLatLng();
+      const markerPos = map.latLngToContainerPoint(markerLatLng);
+
+      if (
+        xPosition + characterRect.width > markerPos.x &&
+        xPosition < markerPos.x + 1 && // Tamanho aproximado do ícone do marcador
+        yPosition + characterRect.height > markerPos.y &&
+        yPosition < markerPos.y + 1// Tamanho aproximado do ícone do marcador
+      ) {
+        alert(`Você encontrou ${marker.getPopup().getContent()}!`);
+        item.collisionAlertShown = true; // Defina a flag de alerta como true para este marcador
+      }
+    }
+  });
+});
+</script>
+
+</body>
+</html>
