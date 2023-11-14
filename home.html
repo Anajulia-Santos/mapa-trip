@@ -109,16 +109,14 @@
 
     section.hud {
         display: flex;
-        flex-direction: row-reverse;
-        background-color: rgba(97, 241, 78, 0.6);
-        width: 100%;
+        flex-direction: column !important;
         position: absolute;
         z-index: 1000;
-        align-items: center;
-        height: 75px;
+        align-items: flex-start;
         margin: 0px;
         padding: 5px;
-
+        background-color: rgba(97, 241, 78, 0.2);
+        border-radius: 12px;
     }
 
     .hud {
@@ -147,46 +145,67 @@
 
     @media (min-width: 650px) {
         div#alerta {
-        margin-top: 6%;
+            margin-top: 6%;
             width: 60%;
             height: 30px;
-    }}
-    @media (min-width: 900px ) {
+        }
+    }
+
+    @media (min-width: 900px) {
         div#alerta {
-        min-width: 100px;
-        max-width: 500px;
-        height: auto;
-        width: auto;
-        min-height: 300px;
-        margin: 5px auto;
-    }}
-    @media (max-width: 600px ) {
-        section.hud span{
-           width: 70px;
+            min-width: 100px;
+            max-width: 500px;
+            height: auto;
+            width: auto;
+            min-height: 300px;
+            margin: 5px auto;
+        }
+    }
+
+    @media (max-width: 600px) {
+        section.hud span {
+            width: 70px;
+
+        }
+
+        div.hud {
+            width: 300px;
+            margin-top: 5px;
+            margin-right: 5px;
+            padding: 2px;
+        }
+
+        .input-group {
+            width: 135px;
+        }
+
+        .input-group-text {
+            font-size: 18px;
+        }
+
+        .input-group-text.number {
+            margin-left: -10px !important;
+        }
+    }
+
+    .leaflet-top.leaflet-left {
+        display: none;
+    }
+
+
+    img.leaflet-marker-icon.leaflet-zoom-animated.leaflet-interactive {
+        border-radius: 50%;
+        border: 3px solid white;
+    }
+    .progress{
+        position: relative !important;
+        z-index: 2000 !important;
+        width: 100%;
         
     }
-    div.hud{
-        width: 300px;
-        margin-top: 5px;
-        margin-right: 5px;
-        padding: 2px;
+    .bg-success{
+        width: 50% !important;
     }
-    .input-group{
-        width: 135px;
-    }
-    .input-group-text{
-        font-size: 18px;
-    }
-    .input-group-text.number{
-      margin-left: -10px !important;
-    }
-}
-
-.leaflet-top.leaflet-left{
-    display: none;
-}
-    
-    
 </style>
 
 <body class="bg-light">
@@ -199,7 +218,6 @@
             <div class="input-group mb-3">
                 <span class="input-group-text"><img src="./img/hud/ppcoin.png" alt=""> </span>
                 <span class="input-group-text number">0.00</span>
-
             </div>
         </div>
         <div class="hud">
@@ -213,11 +231,13 @@
             <div class="input-group mb-3">
                 <span class="input-group-text"> <img src="./img/hud/time.png" alt=""></span>
                 <span class="input-group-text number">0.00</span>
-
             </div>
-
-        </div>
+        </div>   
+        <div class="progress" role="progressbar" aria-label="Success striped example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-striped bg-success"></div>
+          </div>
     </section>
+           
     <div id="descricao"></div>
     <div id="map"></div>
     <div id="card" style="display: none;">
@@ -309,7 +329,7 @@
                 imgindex = (imgindex + 1) % 5;
                 //character  'scaleX(-1)';
                 imgfixa = './img/tras/tras'
-                
+
                 checkCollisions()
             } else if (key === 'ArrowDown') {
                 yPosition += 2;
@@ -385,6 +405,7 @@
                 iconSize: [120, 120],
                 iconAnchor: [5, 15],
                 popupAnchor: [3, 76]
+
             }
         });
 
