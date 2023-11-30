@@ -327,27 +327,27 @@
         document.addEventListener('keydown', (event) => {
             const key = event.key
             document.getElementById("alerta").style.display = "none";
-            if (key === 'ArrowUp') {
+            if (key === 'w'|| key =="ArrowUp") {
                 yPosition -= 2;
                 imgindex = (imgindex + 1) % 5;
                 //character  'scaleX(-1)';
                 imgfixa = './img/tras/tras'
 
                 checkCollisions()
-            } else if (key === 'ArrowDown') {
+            } else if (key === 's' || key == 'ArrowDown') {
                 yPosition += 2;
                 imgindex = (imgindex + 1) % 3;
                 //character  'scaleX(-1)';
                 imgfixa = './img/frente/frente'
                 checkCollisions()
-            } else if (key === 'ArrowLeft') {
+            } else if (key === 'a' || key == 'ArrowLeft') {
                 xPosition -= 2;
                 imgindex = (imgindex + 1) % 8;
                 //character  'scaleX(1)';
                 imgfixa = './img/left/esquerda'
                 checkCollisions()
 
-            } else if (key === 'ArrowRight') {
+            } else if (key === 'd'|| key == 'ArrowRight') {
                 xPosition += 2;
                 imgindex = (imgindex + 1) % 8;
                 //character  'scaleX(1)';
