@@ -224,14 +224,18 @@
         <div class="hud">
             <div class="input-group mb-3">
                 <span class="input-group-text"><img src="./img/hud/passos.png" alt=""> </span>
-                <span class="input-group-text number">000</span>
+                <div class="input-group-text number">
+    <span id="hour">00</span>:
+    <span id="minute">00</span>:
+<span id="second">00</span>:
+                </div>
 
             </div>
         </div>
         <div class="hud">
             <div class="input-group mb-3">
                 <span class="input-group-text"> <img src="./img/hud/time.png" alt=""></span>
-                <span class="input-group-text number">0.00</span>
+                <span class="input-group-text number"></span>
             </div>
         </div>  
         <h5>Progresso no jogo</h5>  
@@ -427,6 +431,70 @@
         L.marker([-22.1205703628283, -51.379494689859534], { icon: Matarazzo }).addTo(map).bindPopup("Centro Histórico Cultural Matarazzo");
         L.marker([-22.120517222431026, -51.41385503494615], { icon: Sesc }).addTo(map).bindPopup("Sesc Thermas de Presidente Prudente");
         L.marker([-22.115825865761924, -51.408900361136546], { icon: Shopping }).addTo(map).bindPopup("Prudenshopping");
+
+
+
+    let hour = 0;
+    let minute = 0;
+    let second = 0;
+    let millisecond = 0;
+
+    let cron;
+
+    // Start the timer automatically when the page loads
+    cron = setInterval(() => { timer(); }, 10);
+
+    function timer() {
+      if ((millisecond += 10) == 1000) {
+        millisecond = 0;
+        second++;
+      }
+      if (second == 60) {
+        second = 0;
+        minute++;
+      }
+      if (minute == 60) {
+        minute = 0;
+        hour++;
+      }
+      document.getElementById('hour').innerText = returnData(hour);
+      document.getElementById('minute').innerText = returnData(minute);
+      document.getElementById('second').innerText = returnData(second);
+      document.getElementById('mi
+
+    "use strict";
+
+    let hour = 0;
+    let minute = 0;
+    let second = 0;
+    let millisecond = 0;
+
+    let cron;
+
+    // Start the timer automatically when the page loads
+    cron = setInterval(() => { timer(); }, 10);
+
+    function timer() {
+      if ((millisecond += 10) == 1000) {
+        millisecond = 0;
+        second++;
+      }
+      if (second == 60) {
+        second = 0;
+        minute++;
+      }
+      if (minute == 60) {
+        minute = 0;
+        hour++;
+      }
+      document.getElementById('hour').innerText = returnData(hour);
+      document.getElementById('minute').innerText = returnData(minute);
+      document.getElementById('second').innerText = returnData(second);
+      document.getElementById('millisecond').innerText = returnData(millisecond);
+    }
+
+    function returnData(input) {
+      return input >= 10 ? input : `0${input}`;
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
